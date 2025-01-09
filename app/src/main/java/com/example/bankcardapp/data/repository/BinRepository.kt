@@ -8,15 +8,26 @@ import com.example.bankcardapp.domain.model.BinInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+import retrofit2.HttpException
+import java.io.IOException
+
 class BinRepository(private val api: BinApi, private val binDao: BinDao) {
     suspend fun getBinInfo(bin: String): BinInfo = withContext(Dispatchers.IO) {
         try {
             api.getBinInfo(bin)
-        }catch (e: Exception) {
-            Log.e("BinRep", "Error fetch bin: ${e.localizedMessage}")
-            throw e
+        } catch (e: HttpException) {
+            val errorMessage = when (e.code()) {
+                400 -> "Bad Request: Invalid BIN format."
+                404 -> "Not Found: BIN not found in the database."
+                500 -> "Server Error: Please try again later."
+                else -> "Unexpected error: ${e.message()}"
+            }
+            throw IOException(errorMessage, e)
+        } catch (e: IOException) {
+            throw IOException("Network error: Please check your connection and try again.", e)
+        } catch (e: Exception) {
+            throw IOException("Unexpected error occurred.", e)
         }
-
     }
 
     suspend fun saveBinInfo(binEntity: BinEntity) = withContext(Dispatchers.IO) {

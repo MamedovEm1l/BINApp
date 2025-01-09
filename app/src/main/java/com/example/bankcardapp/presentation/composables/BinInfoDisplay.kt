@@ -117,5 +117,12 @@ fun InfoRow(label: String, value: String? = null, content: @Composable (() -> Un
                 content()
             }
         }
+        else{
+            Text(
+                text = "нету",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }

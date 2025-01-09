@@ -27,7 +27,10 @@ object AppModule {
             application,
             BinDatabase::class.java,
             "bin_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration() 
+            .build()
+
 
     @Provides
     @Singleton

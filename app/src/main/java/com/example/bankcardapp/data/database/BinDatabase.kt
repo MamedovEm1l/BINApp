@@ -9,16 +9,18 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Database(entities = [BinEntity::class], version = 1)
+@Database(entities = [BinEntity::class], version = 2)
 abstract class BinDatabase : RoomDatabase() {
     abstract fun binDao(): BinDao
 }
 
 @Entity
 data class BinEntity(
-    @PrimaryKey val bin: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val bin: String,
     val info: String
 )
+
 
 
 
